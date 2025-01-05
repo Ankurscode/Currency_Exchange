@@ -1,4 +1,5 @@
-const Base_URL="https://raw.githubusercontent.com/WoXy-Sensei/currency-api/main/api/USD_EUR.json";
+const Base_URL="https://raw.githubusercontent.com/WoXy-Sensei/currency-api/main/api";
+
 
 const dropdowns = document.querySelectorAll(".dropdown select");
 const btn=document.querySelector("form button")
@@ -24,33 +25,7 @@ for(let select of dropdowns){
 }
 
 
-// for(let count of dropdowns){
-//     for(let currCode in countryList){
-//         let newOption=document.createElement("option");
-//         newOption.innerText=currCode;
-//         newOption.value=currCode;
-//         if(count==="from" && currCode==="USD"){
-//             newOption.selected="selected";
-//         }
-//         else if(count==="to" && currCode==="NPR"){
-//             newOption.selected="selected";
-//         }
-//         count.append(newOption);
-//     }
-//     count.addEventListener("change",(evt)=>{
-//         updateFlag(evt.target);
-//     })
-// }
 
-// const updateFlag =(element)=> {
-   
-//     let currCode=element.value
-   
-//     let countryCode=countryList[currCode];
-//     let newSrc=`https://flagsapi.com/${countryCode}/flat/64.png`;
-//    let img= element.parentElement.querySelector("img");
-//     img.src=newSrc;
-// }
 
 
 
@@ -71,26 +46,28 @@ btn.addEventListener("click",async(evt)=>{
         amtValue=1;
         amount.value="1"
     } 
-    const URL = `${BASE_URL}/${fromCurr.value.toLowerCase()}/${toCurr.value.toLowerCase()}.json`;
-    let response = await fetch(URL);
-    let data = await response.json();
-    let rate = data[toCurr.value.toLowerCase()];
+    // const URL = `${Base_URL}/${fromCurr.value.toLowerCase()}/${toCurr.value.toLowerCase()}.json`;
+    // let response = await fetch(URL);
+    // let data = await response.json();
+    // let rate = data[toCurr.value.toLowerCase()];
   
-    let finalAmount = amtVal * rate;
-    msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
-//     fetch(BASE_URL)
-//   .then(response => {
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-//     return response.json();
-//   })
-//   .then(data => {
-//     console.log(data);
-//   })
-//   .catch(error => {
-//     console.error('Error fetching the API:', error);
-//   });
+    // let finalAmount = amtVal * rate;
+    // msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
+    const URL = `${Base_URL}/${fromCurr.value.toLowerCase()}_${toCurr.value.toLowerCase()}`;
+    try {
+        let response = await fetch(URL);
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+        let data = await response.json();
+        let rate = data.rates[toCurr.value];
+        let finalAmount = amtValue * rate;
+        msg.innerText = `${amtValue} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
+    } catch (error) {
+        console.error("Error fetching exchange rate:", error);
+        msg.innerText = "Failed to fetch exchange rate. Please try again.";
+    }
+
 
 })
 
